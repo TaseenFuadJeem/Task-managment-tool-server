@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -36,6 +36,25 @@ async function run() {
 
             res.send(result);
 
+        });
+
+        app.put('/update-a-task/:id', async (req, res) => {
+
+            const id = req.params.id;
+
+            const data = req.body;
+
+            const filter = { _id: ObjectId(id) };
+
+            const options = { upsert: true };
+
+            const updatedDoc = {
+                $set: data
+            };
+
+            const result = await taskCollection.updateOne(filter, updatedDoc, options);
+
+            res.send(result)
         });
 
     }
